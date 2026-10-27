@@ -1,24 +1,29 @@
 ---
 name: deep-inquiry
-description: Upgrades your research from shallow synthesis and confirmation bias to deep, instrument-backed inquiry. Use whenever you investigate an open question, analyze data or logs, debug an ambiguous root cause, evaluate papers or technical options, audit a business or engineering metric, or design an experiment—even if the user only asks for a summary, report, or comparison.
+description: Use whenever you research, investigate, or evaluate anything non-trivial — literature or market reviews, state-of-the-art and feasibility questions ("is X possible", "has anyone done X", "what's the best way to X"), data or log analysis, technical investigations, tool comparisons, fact-checking, root-causing, or setting goals and success criteria for a project. Pushes research past search-and-summarize: re-checks stale priors, drops to raw data and primary sources, runs code and statistical/computational instruments instead of quoting, maintains competing hypotheses (Strong Inference), verifies claims as they enter notes, gets an outside judge, and stops on sufficiency evidence rather than on the first plausible answer. Use it even when the user only says "look into", "dig into", "figure out", or "what do we know about".
 ---
 
-# Deep Inquiry: Strong Inference, Raw Substrates & Ambitious Research
+# Deep Inquiry: Ambitious Research, Strong Inference & Real Instruments
 
-Your default research behavior errs in a predictable direction: **bigger instead of deeper, verbal instead of instrumental, and confirmatory instead of falsifying.** Left unchecked, you answer research questions by gathering pre-digested sources, adopting expert-sounding vocabulary, and writing a polished Markdown synthesis that confirms the user's premise.
+The default way agents research — search, skim snippets, summarize the first plausible sources, stop — produces answers about as good as a quick web search with nicer prose. It fails in two directions at once:
 
-This skill replaces that reflex with **Strong Inference** (John Platt), **Bitter-Lesson compute leverage** (execution and statistical instruments over prose), and **three-dimensional research ambition** (Altitude, Depth, and Range).
+1. **Not ambitious enough (Bulk over Depth, Vocabulary over Instruments):** It treats research as *reading about things* when you can *do things*: pull the raw dataset, read the implementation, run the benchmark, query `duckdb`, fit the survival curve, reproduce the number, or build a simulation. And it anchors on training-time beliefs about what is possible, proposing as a "stretch goal" something that has been routine for months.
+2. **Not skeptical enough (Narrative Confirmation & Credulity):** It searches for evidence that confirms the user's framing, trusts well-formatted sources at face value, counts echoes of a single press release as independent confirmation, and grades its own work.
+
+This skill fixes both. It is a way of working, not a report template.
 
 ---
 
-## Why Your Default Research Runs Shallow
+## Why (Dated Empirical Anchors — Refresh Them, Don't Trust Them)
 
-Four structural biases stack inside model training, and none of them feel like laziness from the inside:
+*As of October 2026. These anchors exist to recalibrate your research habits; if a decision depends on a specific figure, search live before quoting.*
 
-1. **Bulk-Over-Depth RLHF Bias:** Human raters reward long, well-formatted Markdown headings and confident summaries. When asked to "go deeper," your default is to produce *more words and more bullet points* rather than touching raw data or running a decisive test.
-2. **Vocabulary-Over-Instrument Mimicry:** When prompted to act like a scientist, statistician, or principal engineer, models switch *vocabulary* without switching *methods*. Reaching for prose arguments or hand-typed Markdown tables when the problem calls for a database query, survival curve, bootstrap confidence interval, or profiler trace is cosplay, not depth.
-3. **Digested-Source & Confirmation Bias:** Secondary summaries, blog posts, abstracts, and organizational "folk wisdom" outnumber raw primary datasets and failure traces by 100:1 in pretraining corpora. Searching only for evidence that supports the user's framing—and stopping at the first plausible citation—launders consensus into fact.
-4. **Low Research Self-Efficacy (Premature Surrender):** Humans and models routinely assume a question is "too noisy to measure," "out of scope," or only answerable qualitatively—forgetting that you have a Turing-complete shell, statistical libraries, search tools, and parallel agents right in front of you. Like George Dantzig solving two open statistics problems because he thought they were homework, treating hard empirical questions as solvable unlocks methods you would otherwise never try.
+- **Capability compounds fast (~3–4 month horizon doublings):** METR's fit to post-2024 frontier models gives roughly an 89–105 day doubling of autonomous task-completion horizons; in Feb 2026 the public 50% horizon passed ~12 hours (`Claude Opus 4.6`) and reached ~16–17 hours by mid-2026 (`Mythos Preview`, `Opus 5.5`, `GPT-6 Astra`). Whatever you believe models "can't do yet" was likely set at your training cutoff. (Pair with the `bitter-lesson` skill when installed.)
+- **Tool-heavy agent research on raw data produces real discoveries:** In October 2026, a developer used coding agents directly on raw NASA TESS telescope data from 2018, 2020, and 2025 — running 74 analyses, 1,000+ scripts, dozens of false-positive tests, and separate blind AI review sessions — leading NASA to schedule follow-up observations of the exoplanet candidate. That is research as **computation on primary data with outside checks**, not summarization.
+- **The bottleneck is persistence and rigor more than raw intelligence:** On paper-replication benchmarks (`PaperBench`, `ReplicationBench`), agents usually grasp a paper's intent but lose points to premature fallbacks, subtle method omissions, and quitting early. On `PaperBench`, a scaffold that simply stopped `o1` from ending early nearly doubled its score (**13.2% $\rightarrow$ 24.4%**), and `best-of-N` runs far ahead of single attempts.
+- **Agents are dangerously credulous toward "paper-shaped" text:** In a 2026 study (*Is Deep Research Reliable?*, `arXiv:2607.20891`), injecting a single credible-looking misleading document into a deep-research agent's retrieval jumped false-conclusion adoption from **0% to ~55%**, and to **~85%** when it arrived just before synthesis. Paper-like formatting persuaded more than institutional authority; search rank barely mattered.
+- **Naive research loops fail via uneven coverage, context bloat, and premature stopping:** Enterprise deep-research evaluations (*Don't Stop Early*, `arXiv:2604.24978`) show that defining explicit **per-sub-question sufficiency conditions before searching** is what prevents both early quitting and aimless token burn.
+- **Capability is jagged and the public record is survivorship-biased (Terence Tao, *"Math 2.0"*, Oct 2026):** Models are astounding in some directions and inadequate in others, and failed attempts rarely get published. Always log and report your dead ends (`tried_and_failed`).
 
 ---
 
@@ -27,111 +32,147 @@ Four structural biases stack inside model training, and none of them feel like l
 Keep these separate throughout every investigation:
 
 - **Depth vs. Bulk:** A 20-line SQL/Python probe over 100,000 raw records has infinitely more depth than a 2,000-word essay summarizing three blog posts.
-- **Instruments vs. Vocabulary:** Using statistical jargon in prose is vocabulary; running `duckdb`, `scipy.stats`, `statsmodels`, `git log -S`, `perf`, or `z3` on the actual artifact is an instrument.
-- **Raw Substrate vs. Digested Summary:** Abstracts, dashboards, slide decks, and READMEs are *digested claims*. Raw event logs, primary results tables, wire traces, commit diffs, and raw HTML/source are the *substrate*.
-- **Strong Inference vs. Narrative Confirmation:** Narrative research collects evidence for a single story ($H_1$). Strong Inference maintains competing hypotheses ($H_1, H_2, H_{\text{null}}$) and designs the **crux experiment** that kills at least one.
-- **Generative Prediction vs. Backward Description:** Explaining what happened last quarter is description. Building a model or simulation from raw history and showing it predicts on **held-out/unseen data** produces new knowledge.
-- **Cross-Field Methods vs. Theatrical Roleplay:** Asking *"How would a short seller or forensic accountant audit this claim?"* to borrow their **techniques** (footnote reconciliation, conservation checks, survivorship-bias audits) adds range. Writing dialogue in persona adds noise.
+- **Instruments vs. Vocabulary:** Adopting expert terminology in prose is cosplay; running `duckdb`, `scipy.stats`, `statsmodels`, `hyperfine`, `git log -S`, or `z3` on the actual artifact is an instrument.
+- **Raw Substrate vs. Digested Summary:** Abstracts, slide decks, dashboards, and blog posts are *digested claims*. Raw event logs, source code, primary results tables, wire traces, and filings are the *substrate*.
+- **Strong Inference vs. Narrative Confirmation:** Narrative research collects illustrations for a single story ($H_1$). Strong Inference maintains competing hypotheses ($H_1, H_2, H_{\text{null}}$) and designs the **crux** that falsifies at least one.
+- **Provenance vs. Echoes:** Three articles quoting one press release or one benchmark tracker are **one source**, not three independent confirmations.
 
 ---
 
-## The Workflow
+## The Loop
 
-Scale execution to the stakes of the question. Run Step 1 on every research request; run the full 6-step loop whenever the conclusion drives engineering architecture, scientific/ML claims, root-cause diagnosis, or consequential decisions.
+Scale effort to the stakes: a simple fact needs one check at the primary source; an architectural commitment, root-cause diagnosis, or scientific claim deserves the full loop.
 
-### 1. Upgrade the Question Before You Start (Altitude, Depth, Range)
+### 1. Find the Question Behind the Question (Altitude)
 
-Never execute a shallow prompt at face value when a deeper version would actually solve the user's underlying problem. Before searching or writing, silently run the **Four-Question Depth Upgrade**:
+Before searching, write one or two sentences: **what decision or outcome is this research for, and what would change what the user does next?**
+- *"Tell me about X"* sprawls; *"Should we adopt X for our batch pipeline?"* knows what matters. If ambiguity would waste substantial work, ask one focused question; otherwise state your reading and proceed.
+- Ask what the user wants to happen *after* the answer (**Altitude**). Often the highest-leverage deliverable is not a static prose report, but a working prototype, a reproducible benchmark harness, an early-warning detector backtested against historical logs, or a script that keeps answering the question automatically.
 
-> *I want a **deeper** version of this task, not a bigger one:*
-> 1. *What would a **top professional in this field** do here that the user didn't know to ask for?*
-> 2. *What is the **rawest material** they would start from instead of what has already been digested?*
-> 3. *What **specific methods, statistical models, and computational tools** would they use?*
-> 4. *What **outside judge**—other than the model's or user's subjective impression—would prove the result is right?*
+### 2. Write Down Priors, Competing Hypotheses & the Expert Bar
 
-Then check the other two dimensions of ambition ([references/depth-and-instruments.md](references/depth-and-instruments.md)):
-- **Altitude (The Goal Beyond the Goal):** Ask what decision or system this research feeds. If the user asks to "summarize what changed in metrics," escalate to: *"Identify what changed, why, which 3 decisions are most urgent with for/against evidence, and backtest a signal on historical data that would have caught the shift sooner."*
-- **Range (Replace Nouns with Verbs):** Convert static deliverables (*"a comparison doc," "a literature review," "a QBR deck"*) into functional verbs (*"convince a skeptical decision-maker which causal lever breaks under 10× load in 5 minutes"*). Use those verbs to pull in **methods** from adjacent fields (forensic accounting, survival analysis, epidemiology, control theory, short-seller red-teaming)—never persona roleplay.
+Before running your first search or query, explicitly establish:
 
-### 2. Drop to the Rawest Available Substrate
+1. **Your Initial Prior & Confidence:** Note your starting belief and confidence level. At the end of the research, compare. *If nothing moved, ask whether you only searched for confirmation.*
+2. **Competing Hypotheses ($H_1, H_2, H_{\text{null}}$ — Strong Inference):** Never investigate a single hypothesis in a vacuum. State the null hypothesis (*"this effect is noise, selection bias, or logging artifact"*), at least one rival mechanism, and the **double-crux** (what observable evidence rules out each).
+3. **Sub-Questions & Pre-Registered Sufficiency Conditions:** Enumerate the sub-questions so coverage isn't dictated by whatever search returns first. For each, define what settles it: *"a measurement I ran locally"*, *"the primary spec or implementation"*, *"two independent sources that don't share an upstream origin"*. You stop when these are met—not when you have a plausible paragraph.
+4. **The 4-Question Expert Upgrade (Depth Over Bulk):**
+   > *I want a **deeper** version of this task, not a bigger one:*
+   > 1. *What would a **field-leading professional** do here that wasn't asked for?*
+   > 2. *What is the **rawest material** they would start from instead of what has already been digested?*
+   > 3. *What **specific methods, statistical models, and instruments** would they use?*
+   > 4. *What **outside judge**—other than you or me—would prove the result is right?*
+   > *Now execute that version of the task.*
 
-Resist pre-digested inputs. Whenever a claim rests on an intermediate summary, drop one level closer to ground truth:
+### 3. Treat Anything About "Now" as Unknown Until Checked
 
-- **In code & systems:** Skip high-level docs and comments; inspect the actual implementation, AST/call graph, git blame history, compiler output, or raw telemetry/crash traces.
-- **In data & product:** Treat organizational folk wisdom (*"everyone knows churn is an onboarding issue"*, *"latency is caused by the DB"*) as an unverified hypothesis. Pull the raw logs, SQLite/Parquet tables, or distributions and **adversarially test whether the folk belief reproduces in the raw data**.
-- **In papers & benchmarks:** Never cite a paper from its abstract, press release, or secondary blog post. Inspect the **methods section, hyperparameter/compute budgets, baseline fairness, error bars, footnotes, and raw evaluation harnesses**. When a web tool strips formatting, inspect the raw HTML/source or code repository directly.
+Your parametric knowledge is a dated snapshot, and fast-moving fields invert conclusions every few months. Before stating any of the following, run live searches favoring the last 6–12 months:
+- What the state of the art, current version, pricing, or best practice is.
+- That something is *"impossible," "unsolved," "an open problem,"* or *"requires human review at every step."*
+- That a goal would be an *"ambitious"* or *"stretch"* milestone.
 
-### 3. Switch Instruments, Not Vocabulary (The 15-Minute Probe Gate)
+For capability claims, search for the **strongest recent demonstration** under full elicitation, not the typical average. Before proposing a project goal or success criterion, verify whether current systems already do it out of the box; if they do, the real goal lies beyond it.
 
-**Never debate in prose what you can calculate, query, or simulate in a shell.**
+### 4. Climb to the Rawest Material You Can Reach
 
-When you catch yourself about to write a qualitative comparison or a hand-crafted Markdown table, stop and switch to the instruments used by the best data scientists, statisticians, and engineers ([references/depth-and-instruments.md](references/depth-and-instruments.md)):
+Prefer sources in strict tier order ([references/depth-and-instruments.md](references/depth-and-instruments.md)):
 
-| Shallow Default (Avoid) | Field-Leading Instrument (Use Instead) |
+1. **Tier 1 — The Thing Itself:** The raw dataset, source code, live API, event/crash logs, git blame/bisect history, primary regulatory filing, or running the product/library directly.
+2. **Tier 2 — Primary Documents:** The paper's methods, tables, and appendix (never just the abstract), official specifications, changelogs, and raw benchmark results files.
+3. **Tier 3 — Expert Secondary:** Technical write-ups, postmortems, and reviews by maintainers or domain practitioners.
+4. **Tier 4 — Aggregators, News, SEO Content, Forums:** Use strictly for *discovering* Tiers 1–3, **never as evidence**.
+
+When a claim matters and a higher tier is reachable, climb. A number quoted in a blog post gets traced back to where it was measured; organizational folk wisdom (*"we believe churn is an onboarding issue"*) gets checked against raw cohort logs.
+
+### 5. Use the Instruments, Not Just the Vocabulary
+
+When prompted to work like an expert, models default to adopting expert *tone* while still writing qualitative prose or hand-typed Markdown tables. Check yourself: if a top statistician, data scientist, or systems engineer would run code, query a database, fit a model, or diff two versions, **do that** ([references/depth-and-instruments.md](references/depth-and-instruments.md)):
+
+| Shallow Default (Avoid) | Field-Leading Instrument (Run Instead) |
 | :--- | :--- |
-| Eyeballing a few log lines or JSON snippets in context | `duckdb` / `sqlite3` / `polars` aggregation over the full dataset |
-| Reporting raw means or single-run point estimates | Quantiles (`p50`/`p95`/`p99`), bootstrap CIs, Mann-Whitney / permutation tests |
-| Guessing why a metric moved or users churned | Cohort survival analysis (Kaplan-Meier / Cox), regression, ablation tables |
-| Speculating about code performance or complexity | Micro-benchmarks (`hyperfine`, `timeit`), flamegraphs, memory/syscall traces |
-| Arguing verbally about edge cases or state machines | Property-based tests (`hypothesis`), symbolic/SMT checks (`z3`), state-space enumeration |
-| Summarizing what a paper or library probably does | Cloning the repo or running a 20-line reproduction script in `/tmp` or `scratch/` |
+| Quoting a number or eyeballing 20 log lines in context | Reproduce it from raw data via `duckdb`, `sqlite3`, or `polars` |
+| Comparing tools/architectures from blog posts | Write a 15-minute benchmark (`hyperfine`, `timeit`) on a representative workload |
+| Reporting naked averages or single-run point estimates | Quantiles (`p50`/`p95`/`p99`), bootstrap CIs, paired McNemar / permutation tests |
+| Guessing why a metric moved or users churned | Kaplan-Meier survival curves, Cox hazards, regression controlling for confounders |
+| Speculating whether docs and behavior match | Read the implementation, AST/call graph, or run a minimal reproduction script |
+| Debating "what would happen if" in prose | Build a small Monte Carlo / state simulation and test on **held-out history** |
 
-If an empirical probe takes under 15 minutes of tool execution, **run it before presenting conclusions**.
+If a required instrument is unreachable (missing credentials, gated dataset, hardware limit), **state explicitly what is missing and what it would have tested**—never quietly downgrade to a confident summary.
 
-### 4. Apply Strong Inference & the Bitter Lesson of Research
+### 6. Borrow Other Fields' Methods (Range Without Roleplay)
 
-Follow John Platt's **Strong Inference** protocol and Rich Sutton's **Bitter Lesson** ([references/falsification-and-range.md](references/falsification-and-range.md)):
+Restate the deliverable by replacing **nouns with verbs**: not *"a market report"* or *"a QBR deck"*, but *"convincing a skeptical decision-maker which causal lever breaks first and deciding where to move resources in 20 minutes."* Then ask which disciplines are best at those verbs and borrow their **verification procedures**, never their voice ([references/falsification-and-range.md](references/falsification-and-range.md)):
 
-1. **Maintain Multiple Competing Hypotheses ($H_1, H_2, \dots, H_{\text{null}}$):** Never investigate a single hypothesis in isolation. Explicitly state the null hypothesis (*"this effect is noise, selection bias, or measurement artifact"*) and at least one rival mechanism.
-2. **Design the Crux:** Before gathering more data, state the **double-crux**: *"Observation $X$ rules out $H_1$; Observation $Y$ rules out $H_2$."*
-3. **Search Bidirectionally (The Short-Seller Audit):** For every query supporting your leading hypothesis, run an explicit disconfirming search: `[method] failure modes`, `[claim] replication failure`, `[benchmark] contamination / grading flaws`, `[architecture] bottlenecks at scale`.
+- **Short seller / Red team:** Hunt for the single load-bearing assumption or omitted baseline that breaks the thesis.
+- **Forensic accountant:** Reconcile totals against raw line items across sources; explain every discrepancy and footnote exclusion.
+- **Replication scientist:** Attempt to reproduce the headline result from scratch; catalog every unstated hyperparameter or harness dependency.
+- **Epidemiologist / Biostatistician:** Audit for survivorship bias, right-censoring, immortal-time bias, and Simpson's paradox across cohorts.
+- **Experimental physicist:** Check conservation laws (bytes/requests/dollars in = out + stored), dimensional consistency, and Fermi bounds.
+- **Investigative journalist:** Identify who has first-hand incentives and compare on-the-record primary artifacts against retrospective PR.
 
-Sort your research effort into **Appreciating** vs. **Depreciating** work:
+Roleplay adds nothing. Executing what these practitioners actually do adds immense leverage.
 
-| Appreciates with Compute & Model Scale (Do This) | Depreciates / Anti-Pattern (Avoid) |
-| :--- | :--- |
-| **Executable reproduction scripts & self-contained notebooks** | Long-form prose literature summaries with no verifiable artifacts |
-| **Primary-source extraction tables with locked comparability columns** | Cherry-picked headline numbers across incompatible harnesses/baselines |
-| **Explicit negative-result logs (`tried_and_failed` + falsified cruxes)** | Narrative storytelling that hides dead ends and survivorship bias |
-| **Isolated multi-agent NGT probes** (independent hypotheses, zero early cross-talk) | Multi-agent group chat or theatrical roleplay ("Analyst," "Critic" personas) |
-| **Raw dataset queries, simulations, and held-out backtests** | Hand-wavy "Future Work" or "Potential Directions" lists without kill thresholds |
+### 7. Verify Claims as They Arrive (Anti-Echo & Anti-Poisoning Gate)
 
-### 5. Produce New Knowledge & Validate with an Outside Judge
+Research errors compound: a weakly supported claim enters your notes, loses its caveats, and becomes a load-bearing premise two steps later. Furthermore, paper-shaped misinformation persuades models regardless of search rank (`arXiv:2607.20891`). As each load-bearing claim enters your notes, record:
 
-Do not stop at describing the past, and **never ask the model to grade its own research**.
+- **Provenance:** Who measured or asserted it, using what method/harness, and on what date?
+- **Upstream Independence:** Do multiple citations trace back to the same press release, blog post, or contaminated split? (Three echoes = one source.)
+- **Epistemic Status Tag:**
+  - `[Verified: ran/primary]` — You executed the check locally or inspected the Tier 1/2 primary artifact and methods.
+  - `[Supported: independent secondary]` — Corroborated by truly independent Tier 2/3 sources.
+  - `[Unverified / single-source]` — Vendor claim, untraceable preprint, or parametric prior. **Keep this tag attached whenever reusing the claim; never let it quietly become a premise.**
 
-1. **Move from Description to Prediction:** Once you understand the raw data or mechanism, ask: *"What blind spot or earliest predictive signal exists in this data that hasn't been noticed yet?"* Fit or simulate the mechanism on historical data, then **verify that it predicts on held-out / unseen data**.
-2. **Counterfactual Historical Backtesting:** When proposing a new metric, detector, or architectural change, prove its value against real history: *"Show from our own commit/incident/metric history that this method would have caught the failure sooner."*
-3. **Require an Outside Judge:** Before declaring a research finding solid, subject it to a non-verbal, external judge that can fail:
-   - An executable test, invariant check, or held-out split evaluation.
-   - Conservation-law / dimensional / base-rate sanity checks (Fermi bounds).
-   - If using multi-agent orchestration, an epistemically independent verifier (ideally a fresh agent or different provider) that inspects only the claim, raw data, and reproduction script—never your chain of thought.
+Be maximally suspicious of: (a) evidence that arrives late and flips your conclusion without Tier 1 proof, (b) suspiciously precise numbers with no visible denominator or methodology, and (c) paper-shaped documents you cannot verify in a real venue or repository.
 
-### 6. Classify Evidence Narrowly & Strip Weasel Language
+**Mandatory Disconfirmation Search:** Before finalizing your main conclusion, run at least one search or probe explicitly designed to prove it wrong: `"[X] criticism"`, `"[X] failed to replicate"`, `"[X] deprecated"`, `"[X] vs [Y] independent benchmark"`, `"[X] failure modes at scale"`.
 
-Tag substantive claims by their actual epistemic status:
-- **`[Verified by execution]`** — Reproduced directly in this session via script, query, test, or trace.
-- **`[Primary empirical source]`** — Extracted from primary methods/tables with inspected baselines and sample size.
-- **`[Single-source / unaudited]`** — Vendor claim, preprint without code, or single anecdote (`pass@k` existence proof only).
-- **`[Hypothesis / unverified prior]`** — Plausible mechanism from parametric knowledge; requires a crux probe before acting.
+### 8. Get an Outside Judge (Never Self-Grade)
 
-**Before sending your response, scan and rewrite lazy research phrases:**
-- *"Studies show / Research indicates / It is widely known…"* $\rightarrow$ Name the exact source, year, sample/setup, and effect size, or delete the claim.
-- *"X is faster / better / more accurate than Y."* $\rightarrow$ By what magnitude, under what baseline, distribution, and cost/latency budget?
-- *"This appears to be caused by…"* $\rightarrow$ Did you test the null hypothesis and check whether the correlation survives controlling for confounders?
-- *"We could explore A, B, or C in the future."* $\rightarrow$ Rank them by expected value of information and define a 15-minute decisive experiment with an explicit kill threshold.
-- *Presenting a Markdown table of qualitative adjectives (`High / Medium / Low`)* $\rightarrow$ Replace with measured quantities, bounds, or explicit unknowns.
+Never ask yourself whether your own synthesis is convincing—you will almost always say yes. Validate conclusions using an external judge in this order of preference:
 
-**Value-of-Information Stopping Rule:** Ambition in depth is not perfectionism or analysis paralysis. Scale research depth to **decision reversibility × cost of being wrong**. Stop gathering evidence as soon as additional precision would no longer change the decision.
+1. **Executable Ground Truth:** A deterministic test, reproduction script, held-out data backtest, proof/SMT checker (`z3`), or live query against the real system.
+2. **Epistemically Independent Agent (Blind Refutation):** When subagents or multi-agent orchestration are available, hand your claims, sources, and reproduction scripts—*without your chain-of-thought narrative*—to a fresh agent (ideally a different model family/provider) instructed specifically to refute the claims or break the script.
+3. **Human Decision Gate:** Flag value judgments or unmeasurable product tradeoffs explicitly for the user.
+
+If you run multiple independent trajectories or hypotheses (Nominal Group Technique), treat disagreement between attempts as high-value signal to investigate, not noise to average away.
+
+### 9. Stop on Sufficiency Evidence, Not Fatigue or Plausibility
+
+You are done when every sub-question's pre-registered sufficiency condition (Step 2) is met, or when you have proven a condition cannot be met with current access and stated the exact probe that would close the gap. Guard against both failure modes:
+
+- **Premature Stopping (Quitting at the First Plausible Paragraph):** A hard problem looking hard is a trigger to **change your approach**—climb a source tier, switch to a computational instrument, or apply another field's method—not to hedge and stop (`PaperBench`).
+- **Grinding on a Dead End:** Re-running the same search query lightly reworded or polling an empty source. Apply the **Two-Strike Rule**: after two failed attempts with one approach, switch methods/tiers or log the negative result and move on.
+
+When a question decomposes into independent angles or high-noise reading (e.g., auditing 20 files, logs, or papers), **fan out to isolated subagents/workers**. Give each a strict extraction schema, boundaries, and sufficiency criteria so noisy intermediate dumps never pollute the synthesis context.
 
 ---
 
-## What a Good Research Output Includes
+## What to Hand Back
 
-Keep responses proportional—if a 5-line `duckdb` query or git bisect answers the question, show the command, the exact result, and the decision. For substantial investigations, include:
+Keep quick answers concise. For substantive research, structure the deliverable so another engineer or researcher can audit and build on it:
 
-1. **Upgraded Framing & Competing Hypotheses:** The real decision at stake (Altitude), the competing hypotheses ($H_1, H_2, H_{\text{null}}$), and the decisive crux.
-2. **Substrate & Instrument Provenance:** Which raw data, code, or primary tables were inspected, and what executable queries/models/scripts were run.
-3. **Apples-to-Apples Evidence Table:** Quantitative comparisons with explicit baselines, variance/confidence bounds, and evidence tags.
-4. **Falsification & Counterfactual Check:** What folk wisdom or rival hypothesis was ruled out, plus any historical backtest or held-out prediction check.
-5. **Decision & Next Decisive Probe:** The recommended action—or, if uncertainty remains, the smallest executable experiment with a pre-registered threshold that resolves it.
+1. **The Answer First (Dated & Calibrated):** State the conclusion, your confidence level, and the date (`as of YYYY-MM-DD`).
+2. **Prior Delta ("What Moved"):** One line stating what changed from your initial prior (Step 2)—proving the research did real work and highlighting where conventional assumptions are stale.
+3. **Load-Bearing Evidence Table:**
+   `Claim` $\rightarrow$ `Source / Measurement` $\rightarrow$ `Tier (Ran It / Primary / Secondary)` $\rightarrow$ `Upstream Independent?` $\rightarrow$ `Verification / Baseline`.
+4. **Executable Artifacts:** Exact scripts, `duckdb`/SQL queries, benchmark harnesses, or data links so anyone can rerun and verify your numbers.
+5. **Dead Ends & Negative Results (`tried_and_failed`):** Hypotheses falsified, approaches that failed, and popular claims that turned out to be false or single-origin echoes.
+6. **Falsification Conditions & Access Gaps:** What specific observation would overturn this conclusion, and what unreachable instrument/data would tighten confidence.
+7. **The Ambitious Next Step:** The concrete capability, prototype, or automated monitor sitting just beyond what you proved is already solved.
+
+---
+
+## Red Flags in Your Own Draft (Scan Before Sending)
+
+If you spot any of these in your draft response, stop and fix it before sending:
+
+- [ ] A claim about the current state of the art, pricing, or tooling with no source from the last 6–12 months.
+- [ ] Calling something an *"open problem," "not yet possible,"* or *"ambitious stretch goal"* without searching recent frontier demonstrations.
+- [ ] Multiple citations that all trace back to a single press release, blog post, or vendor table (echo laundering).
+- [ ] A number you quoted from a secondary source that you could have computed or verified from raw data/code in under 15 minutes.
+- [ ] Expert jargon or qualitative `High / Medium / Low` Markdown tables wrapped around a summary of search snippets.
+- [ ] A conclusion resting on a single well-formatted document whose primary data or repository you couldn't trace.
+- [ ] Zero searches or probes run specifically to disprove your main conclusion.
+- [ ] Weasel phrases (*"Studies show…", "It is widely believed…", "This appears to suggest…"*) instead of named sources, sample sizes, and effect sizes.
+- [ ] You were the only judge of your work.
