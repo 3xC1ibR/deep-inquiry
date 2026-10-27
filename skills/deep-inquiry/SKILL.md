@@ -73,6 +73,10 @@ Your parametric knowledge is a dated snapshot, and fast-moving fields invert con
 
 For capability claims, search for the **strongest recent demonstration** under full elicitation, not the typical average. Before proposing a project goal or success criterion, verify whether current systems already do it out of the box; if they do, the real goal lies beyond it.
 
+**Measure against the strongest cheap alternative, not the starting point.** *"Better than the base model"* or *"better than what we have now"* is almost always a strawman. Find the best thing obtainable today with minimal effort — a downloadable model or CLI tool, a configuration or prompt change, an off-the-shelf service — and make *that* the baseline any proposal has to beat. In practice, this single move does more than anything else to turn an unambitious success criterion into a meaningful one.
+
+If a capability-calibration skill (`bitter-lesson`) is installed, use it alongside this one for questions about what AI systems can do.
+
 ### 4. Climb to the Rawest Material You Can Reach
 
 Prefer sources in strict tier order ([references/depth-and-instruments.md](references/depth-and-instruments.md)):
@@ -125,6 +129,10 @@ Research errors compound: a weakly supported claim enters your notes, loses its 
 
 Be maximally suspicious of: (a) evidence that arrives late and flips your conclusion without Tier 1 proof, (b) suspiciously precise numbers with no visible denominator or methodology, and (c) paper-shaped documents you cannot verify in a real venue or repository.
 
+**Two traps that repeatedly corrupt research outputs:**
+- **Numbers from different setups aren't comparable:** Vendor self-reported scores and independent re-runs of the exact same model can differ by 10–30 percentage points (e.g., `SWE-bench Pro` ~90% custom vendor harness vs. ~61.5% standardized public split) because the harness, sample, or compute budget differs. Compare like with like, or state explicitly why you cannot.
+- **When the primary source is unreachable, the hedge must survive into the final prose:** If a secondary summary fills an unreachable gap, attribute it explicitly (*"according to a secondary summary of…"*) rather than stating it as fact. Dropping that attribution is how wrong dates and figures slip into otherwise careful answers.
+
 **Mandatory Disconfirmation Search:** Before finalizing your main conclusion, run at least one search or probe explicitly designed to prove it wrong: `"[X] criticism"`, `"[X] failed to replicate"`, `"[X] deprecated"`, `"[X] vs [Y] independent benchmark"`, `"[X] failure modes at scale"`.
 
 ### 8. Get an Outside Judge (Never Self-Grade)
@@ -135,7 +143,7 @@ Never ask yourself whether your own synthesis is convincing—you will almost al
 2. **Epistemically Independent Agent (Blind Refutation):** When subagents or multi-agent orchestration are available, hand your claims, sources, and reproduction scripts—*without your chain-of-thought narrative*—to a fresh agent (ideally a different model family/provider) instructed specifically to refute the claims or break the script.
 3. **Human Decision Gate:** Flag value judgments or unmeasurable product tradeoffs explicitly for the user.
 
-If you run multiple independent trajectories or hypotheses (Nominal Group Technique), treat disagreement between attempts as high-value signal to investigate, not noise to average away.
+If you run multiple independent trajectories or hypotheses (Nominal Group Technique), treat disagreement between attempts as high-value signal to investigate, not noise to average away. If you cannot spawn a fresh agent, lean harder on executable ground-truth checks and state plainly that no independent review occurred.
 
 ### 9. Stop on Sufficiency Evidence, Not Fatigue or Plausibility
 
@@ -148,9 +156,20 @@ When a question decomposes into independent angles or high-noise reading (e.g., 
 
 ---
 
+## Fit the Depth to the Setting
+
+Not every question is a full research project. When the user is brainstorming or chatting (*"what would success look like?"*, *"is this worth pitching?"*) rather than commissioning an investigation, run a **short calibration pass** instead of the heavy loop:
+1. Note your starting prior.
+2. Run a handful of targeted searches/checks for the **current state of the art**, the **strongest cheap alternative available today**, and the **strongest counter-evidence**.
+3. Answer in direct conversational prose—skipping the formal evidence table, while **keeping explicit hedges on anything you didn't confirm at a primary source**—and offer to run the full instrument-backed loop if they want to go deeper.
+
+Reserve the full 9-step loop for when an engineering decision, a deliverable, scientific validity, or real money depends on the answer.
+
+---
+
 ## What to Hand Back
 
-Keep quick answers concise. For substantive research, structure the deliverable so another engineer or researcher can audit and build on it:
+For substantive investigations, structure the deliverable so another engineer or researcher can audit and build on it:
 
 1. **The Answer First (Dated & Calibrated):** State the conclusion, your confidence level, and the date (`as of YYYY-MM-DD`).
 2. **Prior Delta ("What Moved"):** One line stating what changed from your initial prior (Step 2)—proving the research did real work and highlighting where conventional assumptions are stale.
@@ -169,10 +188,13 @@ If you spot any of these in your draft response, stop and fix it before sending:
 
 - [ ] A claim about the current state of the art, pricing, or tooling with no source from the last 6–12 months.
 - [ ] Calling something an *"open problem," "not yet possible,"* or *"ambitious stretch goal"* without searching recent frontier demonstrations.
-- [ ] Multiple citations that all trace back to a single press release, blog post, or vendor table (echo laundering).
+- [ ] **A baseline that is the starting point (*"better than what we have"*) rather than the strongest cheap alternative available today.**
+- [ ] Several citations that all trace back to a single press release, blog post, or vendor table (echo laundering).
+- [ ] **Numbers from incompatible setups (vendor self-report vs. independent harness) compared as if they were apples-to-apples.**
+- [ ] **A claim from a secondary summary stated as flat fact, with its attribution hedge stripped out.**
 - [ ] A number you quoted from a secondary source that you could have computed or verified from raw data/code in under 15 minutes.
 - [ ] Expert jargon or qualitative `High / Medium / Low` Markdown tables wrapped around a summary of search snippets.
 - [ ] A conclusion resting on a single well-formatted document whose primary data or repository you couldn't trace.
 - [ ] Zero searches or probes run specifically to disprove your main conclusion.
 - [ ] Weasel phrases (*"Studies show…", "It is widely believed…", "This appears to suggest…"*) instead of named sources, sample sizes, and effect sizes.
-- [ ] You were the only judge of your work.
+- [ ] You were the only judge of your work (and didn't disclose that no independent review occurred).
