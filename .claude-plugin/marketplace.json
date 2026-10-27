@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "deep-inquiry",
+  "description": "High-ambition research skill: Strong Inference, raw-substrate forensics, statistical/computational instruments, and external verification",
+  "owner": {
+    "name": "r",
+    "email": "hi@rquinonez.com"
+  },
+  "plugins": [
+    {
+      "name": "deep-inquiry",
+      "description": "Upgrade shallow research into high-altitude, deep-substrate, cross-disciplinary inquiry using Strong Inference, real scientific/statistical instruments, raw data, and outside judges.",
+      "author": {
+        "name": "r",
+        "email": "hi@rquinonez.com"
+      },
+      "category": "productivity",
+      "source": "."
+    }
+  ]
+}

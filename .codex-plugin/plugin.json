@@ -1,0 +1,24 @@
+{
+  "name": "deep-inquiry",
+  "version": "0.1.0",
+  "description": "Upgrade shallow research into high-altitude, deep-substrate, cross-disciplinary inquiry using Strong Inference, real scientific/statistical instruments, raw data, and outside judges.",
+  "author": {
+    "name": "r",
+    "email": "hi@rquinonez.com"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Deep Inquiry",
+    "shortDescription": "Upgrade research across Altitude, Depth, and Range with Strong Inference and real instruments.",
+    "longDescription": "Corrects the default LLM tendency toward shallow literature summaries, confirmation bias, and vocabulary mimicry. Enforces the 4-question Depth upgrade, raw-substrate inspection, field-leading statistical/computational instruments, Platt's Strong Inference (competing hypotheses + falsification), cross-disciplinary methods without roleplay, and external non-self verification.",
+    "developerName": "r",
+    "category": "Productivity",
+    "capabilities": [
+      "Altitude, Depth, and Range question upgrading",
+      "Raw-substrate forensics and instrument escalation",
+      "Strong Inference and adversarial falsification",
+      "Generative simulation, backtesting, and outside judges"
+    ],
+    "defaultPrompt": "Use $deep-inquiry to investigate this problem from raw substrates using field-leading instruments, competing hypotheses, and an external verification judge."
+  }
+}
